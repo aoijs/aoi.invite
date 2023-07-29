@@ -1,0 +1,44 @@
+{
+  "devDependencies": {
+    "@types/node": "^20.4.4",
+    "aoi.js": "^6.4.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@akarui/aoi.db": "github:akaruidevelopment/aoi.db#v2",
+    "@akarui/structures": "github:akaruidevelopment/structures#v2",
+    "chalk": "^5.3.0"
+  },
+  "name": "@akarui/aoi.invite",
+  "description": "An extension to handle invite system for aoi.js",
+  "version": "1.0.0",
+  "main": "./dist/cjs/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akaruidevelopment/aoi.invite.git"
+  },
+  "keywords": [
+    "invite",
+    "aoi.js",
+    "aoijs-extension"
+  ],
+  "author": "AkaruiDevelopment",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/akaruidevelopment/aoi.invite/issues"
+  },
+  "homepage": "https://github.com/akaruidevelopment/aoi.invite#readme",
+  "scripts": {
+    "test": "node tests",
+    "start": "node index.js",
+    "build": "npx tsc -p tsconfig.esm.json && npx tsc -p tsconfig.cjs.json && npm run createpack",
+    "createpack": "node builder/pack.js",
+    "lint": "eslint . --ext .ts --fix ",
+    "buildStart": "npm run build && npm start",
+    "genmd": "node generators/readme.js"
+  },
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js"
+  }
+}
