@@ -60,9 +60,10 @@ class InviteManager extends node_events_1.EventEmitter {
             }
             this.invites.set(guild.id, group);
         }
+        console.log("[@akarui/aoi.invite]: Fetched all invites");
     }
     async connect() {
-        this.db.connect();
+        await this.db.connect();
         await this.fetchAllInvites();
         this.#client.on("inviteCreate", (invite) => {
             let group = this.invites.get(invite.guild?.id);
