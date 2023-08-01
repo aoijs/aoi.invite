@@ -20,7 +20,6 @@ export default class InviteManager extends EventEmitter {
     emit<Event extends keyof InviteSystemEvents>(event: Event, ...args: Parameters<InviteSystemEvents[Event]>): boolean;
     setFakeLimit(limit: number): void;
     fetchAllInvites(): Promise<void>;
-    connect(): Promise<void>;
     generateinviterData(): InviterData;
     addMemberToDB({ member, inviter, code, guildId, }: {
         member: GuildMember;

@@ -35,6 +35,9 @@ class InviteManager extends node_events_1.EventEmitter {
                 securityKey: dbOptions.sk,
             },
         });
+        this.#client.on("ready", async () => {
+            await this.#connect();
+        });
     }
     on(event, listener) {
         return super.on(event, listener);
@@ -56,13 +59,13 @@ class InviteManager extends node_events_1.EventEmitter {
                 continue;
             const group = new structures_1.Group(Infinity);
             for (const invite of invites.values()) {
-                group.set(invite.code, invite);
+                group.set(invite.code, structuredClone(invite));
             }
             this.invites.set(guild.id, group);
         }
         console.log("[@akarui/aoi.invite]: Fetched all invites");
     }
-    async connect() {
+    async #connect() {
         await this.db.connect();
         await this.fetchAllInvites();
         this.#client.on("inviteCreate", (invite) => {

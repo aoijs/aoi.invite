@@ -39,6 +39,11 @@ export default class InviteManager extends EventEmitter {
                 securityKey: dbOptions.sk,
             },
         });
+
+        this.#client.on("ready", async () => {
+            await this.#connect();
+        }
+        );
     }
     on<Event extends keyof InviteSystemEvents>(
         event: Event,
@@ -67,7 +72,7 @@ export default class InviteManager extends EventEmitter {
             if (!invites) continue;
             const group = new Group<string, Invite>(Infinity);
             for (const invite of invites.values()) {
-                group.set(invite.code, invite);
+                group.set(invite.code, structuredClone(invite));
             }
             this.invites.set(guild.id, group);
         }
@@ -75,7 +80,7 @@ export default class InviteManager extends EventEmitter {
         console.log("[@akarui/aoi.invite]: Fetched all invites")
     }
 
-    async connect() {
+    async #connect() {
         await this.db.connect();
         await this.fetchAllInvites();
         this.#client.on("inviteCreate", (invite) => {
