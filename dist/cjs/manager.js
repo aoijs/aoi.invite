@@ -19,6 +19,8 @@ class InviteManager extends node_events_1.EventEmitter {
             fakeLimit: 2 * 7 * 24 * 60 * 60 * 1000,
         };
         this.#client = client;
+        //@ts-ignore
+        this.#client.AoiInviteSystem = this;
         this.invites = new structures_1.Group(Infinity);
         this.db = new aoi_db_1.KeyValue({
             dataConfig: {

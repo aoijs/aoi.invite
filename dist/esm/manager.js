@@ -14,6 +14,8 @@ export default class InviteManager extends EventEmitter {
             fakeLimit: 2 * 7 * 24 * 60 * 60 * 1000,
         };
         this.#client = client;
+        //@ts-ignore
+        this.#client.AoiInviteSystem = this;
         this.invites = new Group(Infinity);
         this.db = new KeyValue({
             dataConfig: {
