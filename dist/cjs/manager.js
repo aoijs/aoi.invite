@@ -60,7 +60,7 @@ class InviteManager extends node_events_1.EventEmitter {
         const guilds = this.#client.guilds.cache;
         for (const guild of guilds.values()) {
             const invites = await guild.invites.fetch().catch((err) => {
-                this.emit("error", err);
+                this.emit("error", err.toSting());
                 return null;
             });
             if (!invites)
