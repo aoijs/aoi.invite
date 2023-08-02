@@ -78,7 +78,7 @@ export default class InviteManager extends EventEmitter {
         const guilds = this.#client.guilds.cache;
         for (const guild of guilds.values()) {
             const invites = await guild.invites.fetch().catch((err) => {
-                this.emit("error", err.toSting());
+                this.emit("error", err.toString());
                 return null;
             });
             if (!invites) continue;
