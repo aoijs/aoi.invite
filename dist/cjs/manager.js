@@ -13,15 +13,23 @@ class InviteManager extends node_events_1.EventEmitter {
     options;
     invites;
     readyAt = -1;
-    constructor(client, dbOptions) {
+    events;
+    cmds;
+    constructor(client, dbOptions, events) {
         super();
         this.options = {
             fakeLimit: 2 * 7 * 24 * 60 * 60 * 1000,
         };
         this.#client = client;
+        this.cmds = {
+            inviteJoin: new structures_1.Group(Infinity),
+            inviteLeave: new structures_1.Group(Infinity),
+            error: new structures_1.Group(Infinity),
+        };
         //@ts-ignore
         this.#client.AoiInviteSystem = this;
         this.invites = new structures_1.Group(Infinity);
+        this.events = events;
         this.db = new aoi_db_1.KeyValue({
             dataConfig: {
                 path: "./database",
@@ -68,6 +76,7 @@ class InviteManager extends node_events_1.EventEmitter {
     async #connect() {
         await this.db.connect();
         await this.fetchAllInvites();
+        this.#bindEvents();
         this.#client.on("inviteCreate", (invite) => {
             let group = this.invites.get(invite.guild?.id);
             if (!group)
@@ -316,7 +325,8 @@ class InviteManager extends node_events_1.EventEmitter {
     }
     async getInviteeData(id, guildId) {
         const data = await this.db.findOne("inviteCodes", (data) => {
-            return data.value.find((x) => x.id === id) && data.key.endsWith(guildId);
+            return (data.value.find((x) => x.id === id) &&
+                data.key.endsWith(guildId));
         });
         if (!data)
             return null;
@@ -413,6 +423,31 @@ class InviteManager extends node_events_1.EventEmitter {
                 ?.members.cache.get(inviter.value.inviter)?.displayName ?? "Unknown"));
         }
         return res;
+    }
+    #bindEvents() {
+        for (const event of this.events) {
+            this.on(event, async (args) => {
+                const cmds = this.cmds[event];
+                if (!cmds)
+                    return;
+                for (const cmd of cmds.V()) {
+                    const data = {};
+                    let chan = null;
+                    if (cmd?.channel?.includes("$")) {
+                        const id = await this.#client.functionManager.interpreter(this.#client, {}, [], { name: "ChannelParser", code: cmd?.channel }, this.#client.db, true);
+                        chan = this.#client.channels.cache.get(id?.code);
+                        data.channel = chan;
+                    }
+                    else {
+                        chan = this.#client.channels.cache.get(cmd.channel);
+                        data.channel = chan;
+                    }
+                    await this.#client.functionManager.interpreter(this.#client, data, [], this.#client.db, false, chan?.id, {
+                        eventInfo: args,
+                    }, chan);
+                }
+            });
+        }
     }
 }
 exports.default = InviteManager;

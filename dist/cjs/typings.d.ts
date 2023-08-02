@@ -54,4 +54,5 @@ export interface FunctionData {
         code: string;
     }>;
 }
-//# sourceMappingURL=interface.d.ts.map
+export type InviteManagerEvents = "inviteJoin" | "inviteLeave" | "error";
+//# sourceMappingURL=typings.d.ts.map

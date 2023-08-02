@@ -1,4 +1,4 @@
 import InviteManager from "./manager.js";
-export * from "./interface.js";
+export * from "./typings.js";
 export { InviteManager };
 //# sourceMappingURL=index.d.ts.map

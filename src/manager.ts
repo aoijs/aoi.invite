@@ -1,10 +1,10 @@
 import { EventEmitter } from "node:events";
-import { AoiClient } from "aoi.js";
+import { AoiClient, Command } from "aoi.js";
 import { KeyValue, KeyValueData } from "@akarui/aoi.db";
 import { Invite, GuildMember } from "discord.js";
 import { Group } from "@akarui/structures";
-import { CodeData, InviterData } from "./interface.js";
-import { InviteSystemEvents } from "./interface.js";
+import { CodeData, InviteManagerEvents, InviterData } from "./typings.js";
+import { InviteSystemEvents } from "./typings.js";
 import functions from "./functions.js";
 export default class InviteManager extends EventEmitter {
     #client: AoiClient;
@@ -12,20 +12,33 @@ export default class InviteManager extends EventEmitter {
     options: { fakeLimit: number };
     invites: Group<string, Group<string, Invite>>;
     readyAt: number = -1;
+    events: InviteManagerEvents[];
+    cmds: {
+        inviteJoin: Group<string, Command>;
+        inviteLeave: Group<string, Command>;
+        error: Group<string, Command>;
+    };
     constructor(
         client: AoiClient,
         dbOptions: {
             sk: string;
         },
+        events: InviteManagerEvents[],
     ) {
         super();
         this.options = {
             fakeLimit: 2 * 7 * 24 * 60 * 60 * 1000,
         };
         this.#client = client;
+        this.cmds = {
+            inviteJoin: new Group(Infinity),
+            inviteLeave: new Group(Infinity),
+            error: new Group(Infinity),
+        };
         //@ts-ignore
         this.#client.AoiInviteSystem = this;
         this.invites = new Group(Infinity);
+        this.events = events;
         this.db = new KeyValue({
             dataConfig: {
                 path: "./database",
@@ -42,8 +55,7 @@ export default class InviteManager extends EventEmitter {
 
         this.#client.on("ready", async () => {
             await this.#connect();
-        }
-        );
+        });
     }
     on<Event extends keyof InviteSystemEvents>(
         event: Event,
@@ -77,12 +89,13 @@ export default class InviteManager extends EventEmitter {
             this.invites.set(guild.id, group);
         }
 
-        console.log("[@akarui/aoi.invite]: Fetched all invites")
+        console.log("[@akarui/aoi.invite]: Fetched all invites");
     }
 
     async #connect() {
         await this.db.connect();
         await this.fetchAllInvites();
+        this.#bindEvents();
         this.#client.on("inviteCreate", (invite) => {
             let group = this.invites.get(invite.guild?.id as string);
             if (!group) group = new Group(Infinity);
@@ -368,7 +381,10 @@ export default class InviteManager extends EventEmitter {
 
     async getInviteeData(id: string, guildId: string) {
         const data = await this.db.findOne("inviteCodes", (data) => {
-            return data.value.find((x: { id: string; }) => x.id === id) && data.key.endsWith(guildId);
+            return (
+                data.value.find((x: { id: string }) => x.id === id) &&
+                data.key.endsWith(guildId)
+            );
         });
         if (!data) return null;
 
@@ -500,5 +516,50 @@ export default class InviteManager extends EventEmitter {
             );
         }
         return res;
+    }
+
+    #bindEvents() {
+        for (const event of this.events) {
+            this.on(event, async (args: any) => {
+                const cmds = this.cmds[event];
+                if (!cmds) return;
+
+                for (const cmd of cmds.V()) {
+                    const data = {} as Record<string, any>;
+                    let chan = null;
+                    if (cmd?.channel?.includes("$")) {
+                        const id = await (
+                            this.#client.functionManager.interpreter as Function
+                        )(
+                            this.#client,
+                            {},
+                            [],
+                            { name: "ChannelParser", code: cmd?.channel },
+                            this.#client.db,
+                            true,
+                        );
+                        chan = this.#client.channels.cache.get(id?.code);
+                        data.channel = chan;
+                    } else {
+                        chan = this.#client.channels.cache.get(cmd.channel);
+                        data.channel = chan;
+                    }
+                    await (
+                        this.#client.functionManager.interpreter as Function
+                    )(
+                        this.#client,
+                        data,
+                        [],
+                        this.#client.db,
+                        false,
+                        chan?.id,
+                        {
+                            eventInfo: args,
+                        },
+                        chan,
+                    );
+                }
+            });
+        }
     }
 }

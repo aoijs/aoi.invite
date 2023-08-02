@@ -1,4 +1,4 @@
-import { FunctionData } from "./interface.js";
+import { FunctionData } from "./typings.js";
 
 const funcitons: FunctionData[] = [
     {

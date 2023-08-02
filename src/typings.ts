@@ -67,3 +67,5 @@ export interface FunctionData {
         code: string;
     }>;
 }
+
+export type InviteManagerEvents = "inviteJoin" | "inviteLeave" | "error";

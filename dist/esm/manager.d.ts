@@ -1,10 +1,10 @@
 import { EventEmitter } from "node:events";
-import { AoiClient } from "aoi.js";
+import { AoiClient, Command } from "aoi.js";
 import { KeyValue } from "@akarui/aoi.db";
 import { Invite, GuildMember } from "discord.js";
 import { Group } from "@akarui/structures";
-import { InviterData } from "./interface.js";
-import { InviteSystemEvents } from "./interface.js";
+import { InviteManagerEvents, InviterData } from "./typings.js";
+import { InviteSystemEvents } from "./typings.js";
 export default class InviteManager extends EventEmitter {
     #private;
     db: KeyValue;
@@ -13,9 +13,15 @@ export default class InviteManager extends EventEmitter {
     };
     invites: Group<string, Group<string, Invite>>;
     readyAt: number;
+    events: InviteManagerEvents[];
+    cmds: {
+        inviteJoin: Group<string, Command>;
+        inviteLeave: Group<string, Command>;
+        error: Group<string, Command>;
+    };
     constructor(client: AoiClient, dbOptions: {
         sk: string;
-    });
+    }, events: InviteManagerEvents[]);
     on<Event extends keyof InviteSystemEvents>(event: Event, listener: InviteSystemEvents[Event]): this;
     emit<Event extends keyof InviteSystemEvents>(event: Event, ...args: Parameters<InviteSystemEvents[Event]>): boolean;
     setFakeLimit(limit: number): void;

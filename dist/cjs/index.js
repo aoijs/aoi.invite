@@ -20,5 +20,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InviteManager = void 0;
 const manager_js_1 = __importDefault(require("./manager.js"));
 exports.InviteManager = manager_js_1.default;
-__exportStar(require("./interface.js"), exports);
+__exportStar(require("./typings.js"), exports);
 //# sourceMappingURL=index.js.map
