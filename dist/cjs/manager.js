@@ -52,7 +52,7 @@ class InviteManager extends node_events_1.EventEmitter {
         const guilds = this.#client.guilds.cache;
         for (const guild of guilds.values()) {
             const invites = await guild.invites.fetch().catch((err) => {
-                this.#client.emit("error", err);
+                this.emit("error", err);
                 return null;
             });
             if (!invites)
@@ -316,7 +316,7 @@ class InviteManager extends node_events_1.EventEmitter {
     }
     async getInviteeData(id, guildId) {
         const data = await this.db.findOne("inviteCodes", (data) => {
-            return data.value.includes(id) && data.key.endsWith(guildId);
+            return data.value.find((x) => x.id === id) && data.key.endsWith(guildId);
         });
         if (!data)
             return null;

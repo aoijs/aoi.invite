@@ -66,7 +66,7 @@ export default class InviteManager extends EventEmitter {
         const guilds = this.#client.guilds.cache;
         for (const guild of guilds.values()) {
             const invites = await guild.invites.fetch().catch((err) => {
-                this.#client.emit("error", err);
+                this.emit("error", err);
                 return null;
             });
             if (!invites) continue;
@@ -368,7 +368,7 @@ export default class InviteManager extends EventEmitter {
 
     async getInviteeData(id: string, guildId: string) {
         const data = await this.db.findOne("inviteCodes", (data) => {
-            return data.value.includes(id) && data.key.endsWith(guildId);
+            return data.value.find((x: { id: string; }) => x.id === id) && data.key.endsWith(guildId);
         });
         if (!data) return null;
 
