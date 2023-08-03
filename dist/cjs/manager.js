@@ -24,7 +24,7 @@ class InviteManager extends node_events_1.EventEmitter {
         this.cmds = {
             inviteJoin: new structures_1.Group(Infinity),
             inviteLeave: new structures_1.Group(Infinity),
-            error: new structures_1.Group(Infinity),
+            inviteError: new structures_1.Group(Infinity),
         };
         //@ts-ignore
         this.#client.AoiInviteSystem = this;
@@ -60,7 +60,7 @@ class InviteManager extends node_events_1.EventEmitter {
         const guilds = this.#client.guilds.cache;
         for (const guild of guilds.values()) {
             const invites = await guild.invites.fetch().catch((err) => {
-                this.emit("error", err.toString());
+                this.emit("inviteError", err.toString());
                 return null;
             });
             if (!invites)
@@ -238,7 +238,7 @@ class InviteManager extends node_events_1.EventEmitter {
     }
     async getCodeData(code, guildId, inviter) {
         if (inviter) {
-            const data = (await this.db.get("inviteCodes", `${code}_${guildId}_${inviter}`))?.value;
+            const data = (await this.db.get("inviteCodes", `${code}_${guildId}_${inviter}`));
             if (!data)
                 return null;
             return data;
@@ -246,7 +246,7 @@ class InviteManager extends node_events_1.EventEmitter {
         else {
             const data = (await this.db.findOne("inviteCodes", (data) => {
                 return data.key.startsWith(`${code}_${guildId}_`);
-            }))?.value;
+            }));
             if (!data)
                 return null;
             return data;
@@ -325,8 +325,8 @@ class InviteManager extends node_events_1.EventEmitter {
     }
     async getInviteeData(id, guildId) {
         const data = await this.db.findOne("inviteCodes", (data) => {
-            return (data.value.find((x) => x.id === id) &&
-                data.key.endsWith(guildId));
+            return (data.key.split("_")[1] === guildId &&
+                data.value.find((x) => x.id === id));
         });
         if (!data)
             return null;
@@ -448,6 +448,10 @@ class InviteManager extends node_events_1.EventEmitter {
                 }
             });
         }
+    }
+    async getInviteJoins(code, guildId) {
+        const data = await this.getCodeData(code, guildId);
+        return data?.value?.map((x) => x.id);
     }
 }
 exports.default = InviteManager;

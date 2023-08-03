@@ -46,7 +46,7 @@ export interface InviteSystemEvents {
         code: string;
         guildId: string;
     }) => void;
-    error: (error: Error) => void;
+    inviteError: (error: Error) => void;
 }
 
 export interface FunctionData {
@@ -68,4 +68,4 @@ export interface FunctionData {
     }>;
 }
 
-export type InviteManagerEvents = "inviteJoin" | "inviteLeave" | "error";
+export type InviteManagerEvents = "inviteJoin" | "inviteLeave" | "inviteError";

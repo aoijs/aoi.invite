@@ -34,7 +34,7 @@ export interface InviteSystemEvents {
         code: string;
         guildId: string;
     }) => void;
-    error: (error: Error) => void;
+    inviteError: (error: Error) => void;
 }
 export interface FunctionData {
     name: string;
@@ -54,5 +54,5 @@ export interface FunctionData {
         code: string;
     }>;
 }
-export type InviteManagerEvents = "inviteJoin" | "inviteLeave" | "error";
+export type InviteManagerEvents = "inviteJoin" | "inviteLeave" | "inviteError";
 //# sourceMappingURL=typings.d.ts.map

@@ -1,6 +1,6 @@
 import { EventEmitter } from "node:events";
 import { AoiClient, Command } from "aoi.js";
-import { KeyValue } from "@akarui/aoi.db";
+import { KeyValue, KeyValueData } from "@akarui/aoi.db";
 import { Invite, GuildMember } from "discord.js";
 import { Group } from "@akarui/structures";
 import { InviteManagerEvents, InviterData } from "./typings.js";
@@ -17,7 +17,7 @@ export default class InviteManager extends EventEmitter {
     cmds: {
         inviteJoin: Group<string, Command>;
         inviteLeave: Group<string, Command>;
-        error: Group<string, Command>;
+        inviteError: Group<string, Command>;
     };
     constructor(client: AoiClient, dbOptions: {
         sk: string;
@@ -36,7 +36,7 @@ export default class InviteManager extends EventEmitter {
     isFakeMember(member: GuildMember): boolean;
     getInviterGuildData(inviter: string, guildId: string): Promise<InviterData | null>;
     getInviterData(inviter: string): Promise<InviterData[] | null>;
-    getCodeData(code: string, guildId: string, inviter?: string): Promise<string[] | null>;
+    getCodeData(code: string, guildId: string, inviter?: string): Promise<KeyValueData | null>;
     memberJoin(member: GuildMember): Promise<void>;
     memberLeave(member: GuildMember, guildId: string): Promise<void>;
     getInviteeData(id: string, guildId: string): Promise<{
@@ -49,5 +49,6 @@ export default class InviteManager extends EventEmitter {
     resetGuildInvites(guildId: string): Promise<void>;
     setInviterData(inviter: string, guildId: string, data: InviterData): Promise<void>;
     getLeaderboard(guildId: string, page?: number, limit?: number, format?: string): Promise<any[] | null>;
+    getInviteJoins(code: string, guildId: string): Promise<any>;
 }
 //# sourceMappingURL=manager.d.ts.map
