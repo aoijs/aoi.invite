@@ -285,20 +285,16 @@ export default class InviteManager extends EventEmitter {
         inviter?: string,
     ): Promise<KeyValueData | null> {
         if (inviter) {
-            const data = (
-                await this.db.get(
-                    "inviteCodes",
-                    `${code}_${guildId}_${inviter}`,
-                )
+            const data = await this.db.get(
+                "inviteCodes",
+                `${code}_${guildId}_${inviter}`,
             );
             if (!data) return null;
             return data;
         } else {
-            const data = (
-                await this.db.findOne("inviteCodes", (data) => {
-                    return data.key.startsWith(`${code}_${guildId}_`);
-                })
-            );
+            const data = await this.db.findOne("inviteCodes", (data) => {
+                return data.key.startsWith(`${code}_${guildId}_`);
+            });
             if (!data) return null;
             return data;
         }
@@ -427,6 +423,16 @@ export default class InviteManager extends EventEmitter {
         });
     }
     async setInviterData(inviter: string, guildId: string, data: InviterData) {
+
+        for(const code of data.codes) {
+            const codeData = data.codeData[code];
+            const total = codeData.real + codeData.fake + codeData.leave;
+            codeData.total = total;
+        }
+
+        const total = data.counts.real + data.counts.fake + data.counts.leave;
+        data.counts.total = total;
+
         await this.db.set("invites", `${inviter}_${guildId}`, {
             value: data as any,
         });
@@ -550,6 +556,7 @@ export default class InviteManager extends EventEmitter {
                         this.#client,
                         data,
                         [],
+                        cmd,
                         this.#client.db,
                         false,
                         chan?.id,
@@ -563,8 +570,92 @@ export default class InviteManager extends EventEmitter {
         }
     }
 
-    async getInviteJoins(code:string,guildId:string) {
+    async getInviteJoins(code: string, guildId: string) {
         const data = await this.getCodeData(code, guildId);
-        return data?.value?.map((x: { id: string; }) => x.id);
+        return data?.value?.map((x: { id: string }) => x.id);
+    }
+
+    async getInviteLeaderboard(
+        guildId: string,
+        page: number,
+        limit: number,
+        format: string,
+    ) {
+        const data = await this.db.all("invites", (data) => {
+            return data.key.endsWith(guildId);
+        });
+        if (!data) return null;
+
+        const res = [];
+        data.sort((a, b) => {
+            if (a.value.counts.total > b.value.counts.total) return -1;
+            else if (a.value.counts.total < b.value.counts.total) return 1;
+            else {
+                if (a.value.counts.real > b.value.counts.real) return -1;
+                else if (a.value.counts.real < b.value.counts.real) return 1;
+                else {
+                    if (a.value.counts.fake < b.value.counts.fake) return -1;
+                    else if (a.value.counts.fake > b.value.counts.fake)
+                        return 1;
+                    else {
+                        if (a.value.counts.leave < b.value.counts.leave)
+                            return -1;
+                        else if (a.value.counts.leave > b.value.counts.leave)
+                            return 1;
+                        else return 0;
+                    }
+                }
+            }
+        });
+
+        const invites = data.slice((page - 1) * limit, page * limit);
+
+        let index = 1;
+        for (const invite of invites) {
+            /**
+             options: [
+            "{position}",
+            "{invitername}",
+            "{inviter}",
+            "{inviternick}",
+            "{total}",
+            "{fake}",
+            "{real}",
+            "{leave}",
+        ],
+             */
+            res.push(
+                format
+                    .replaceAll(
+                        /{position}/g,
+                        (page - 1) * limit + index++ + "",
+                    )
+                    .replaceAll(
+                        /{invitername}/g,
+                        this.#client.users.cache.get(invite.value.inviter)
+                            ?.username ?? "Unknown",
+                    )
+                    .replaceAll(/{inviter}/g, invite.value.inviter)
+                    .replaceAll(
+                        /{inviternick}/g,
+                        this.#client.guilds.cache
+                            .get(guildId)
+                            ?.members.cache.get(invite.value.inviter)
+                            ?.displayName ?? "Unknown",
+                    )
+                    .replaceAll(
+                        /{total}/g,
+                        invite.value.counts.total.toString(),
+                    )
+                    .replaceAll(/{fake}/g, invite.value.counts.fake.toString())
+                    .replaceAll(/{real}/g, invite.value.counts.real.toString())
+                    .replaceAll(
+                        /{leave}/g,
+                        invite.value.counts.leave.toString(),
+                    ),
+            );
+        }
+
+        return res;
     }
 }

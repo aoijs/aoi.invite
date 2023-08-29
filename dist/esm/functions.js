@@ -25,7 +25,7 @@ const funcitons = [
                 default: "all",
             },
         ],
-        options: ["all", "inviter", "code", "fake"],
+        options: ["all", "inviter", "code", "fake", "join"],
         returns: "string | boolean | object",
         example: `
 $inviteeInfo
@@ -46,7 +46,9 @@ $createObject[name;$inviteeInfo[$authorID;$guildID;all]]
             data.result =
                 option === "all"
                     ? JSON.stringify(result)
-                    : result[option] ?? false;
+                    : option === "fake"
+                        ? result.isFake ?? false
+                        : result[option] ?? false;
             return {
                 code: d.util.setCode(data),
             };
@@ -99,7 +101,7 @@ $createObject[name;$inviterInfo[$authorID;$guildID;all]]
             const inviteSystem = d.client.AoiInviteSystem;
             if (!inviteSystem)
                 return d.aoiError.fnError(d, "custom", { inside: data.inside }, "InviteManager is not enabled in this bot!");
-            const inviterData = await inviteSystem.getInviterData(userId, guildId);
+            const inviterData = await inviteSystem.getInviterGuildData(userId, guildId);
             const result = inviterData ?? {};
             const options = option.split(".");
             if (option !== "all") {
@@ -107,7 +109,7 @@ $createObject[name;$inviterInfo[$authorID;$guildID;all]]
                 for (const option of options) {
                     value = value?.[option];
                 }
-                data.result = value ?? null;
+                data.result = typeof value === "object" ? JSON.stringify(value) : value ?? null;
             }
             else {
                 data.result = JSON.stringify(result);
@@ -296,7 +298,7 @@ $inviteJoins[inviteCode;$guildID]
             {
                 name: "value",
                 description: "The value",
-                type: "any",
+                type: "number",
                 required: true,
             },
         ],
@@ -316,17 +318,10 @@ $modifyInvite[$authorID;$guildID;counts.total;10]
             const inviteSystem = d.client.AoiInviteSystem;
             if (!inviteSystem)
                 return d.aoiError.fnError(d, "custom", { inside: data.inside }, "InviteManager is not enabled in this bot!");
-            const inviterData = await inviteSystem.getInviterData(inviter, guildId);
+            const inviterData = await inviteSystem.getInviterGuildData(inviter, guildId);
             if (!inviterData)
                 return d.aoiError.fnError(d, "custom", { inside: data.inside }, "Inviter data not found!");
-            const options = option.split(".");
-            let dataToModify = inviterData;
-            for (const option of options) {
-                dataToModify = dataToModify[option];
-            }
-            if (!dataToModify)
-                return d.aoiError.fnError(d, "custom", { inside: data.inside }, "Data not found!");
-            dataToModify = value;
+            eval(`inviterData.${option} = ${value}`);
             await inviteSystem.setInviterData(inviter, guildId, inviterData);
             return {
                 code: d.util.setCode(data),
@@ -389,7 +384,7 @@ $inviteLeaderboard[$guildID;1;10;{position}. {invitername} - {total} invites]
             const inviteSystem = d.client.AoiInviteSystem;
             if (!inviteSystem)
                 return d.aoiError.fnError(d, "custom", { inside: data.inside }, "InviteManager is not enabled in this bot!");
-            data.result = await inviteSystem.getInviteLeaderboard(guildId, page, limit, format);
+            data.result = (await inviteSystem.getInviteLeaderboard(guildId, page, limit, format)).join("\n");
             return {
                 code: d.util.setCode(data),
             };
