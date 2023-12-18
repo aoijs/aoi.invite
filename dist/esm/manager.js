@@ -1,8 +1,13 @@
-import { EventEmitter } from "node:events";
-import { KeyValue } from "@akarui/aoi.db";
-import { Group } from "@akarui/structures";
-import functions from "./functions.js";
-export default class InviteManager extends EventEmitter {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const node_events_1 = require("node:events");
+const aoi_db_1 = require("@akarui/aoi.db");
+const structures_1 = require("@akarui/structures");
+const functions_js_1 = __importDefault(require("./functions.js"));
+class InviteManager extends node_events_1.EventEmitter {
     #client;
     db;
     options;
@@ -17,15 +22,15 @@ export default class InviteManager extends EventEmitter {
         };
         this.#client = client;
         this.cmds = {
-            inviteJoin: new Group(Infinity),
-            inviteLeave: new Group(Infinity),
-            inviteError: new Group(Infinity),
+            inviteJoin: new structures_1.Group(Infinity),
+            inviteLeave: new structures_1.Group(Infinity),
+            inviteError: new structures_1.Group(Infinity),
         };
         //@ts-ignore
         this.#client.AoiInviteSystem = this;
-        this.invites = new Group(Infinity);
+        this.invites = new structures_1.Group(Infinity);
         this.events = events;
-        this.db = new KeyValue({
+        this.db = new aoi_db_1.KeyValue({
             dataConfig: {
                 path: "./database",
                 tables: ["invites", "inviteCodes"],
@@ -60,7 +65,7 @@ export default class InviteManager extends EventEmitter {
             });
             if (!invites)
                 continue;
-            const group = new Group(Infinity);
+            const group = new structures_1.Group(Infinity);
             for (const invite of invites.values()) {
                 group.set(invite.code, structuredClone(invite));
             }
@@ -75,7 +80,7 @@ export default class InviteManager extends EventEmitter {
         this.#client.on("inviteCreate", (invite) => {
             let group = this.invites.get(invite.guild?.id);
             if (!group)
-                group = new Group(Infinity);
+                group = new structures_1.Group(Infinity);
             group.set(invite.code, invite);
             this.invites.set(invite.guild?.id, group);
         });
@@ -93,7 +98,7 @@ export default class InviteManager extends EventEmitter {
             });
             if (!invites)
                 return;
-            const group = new Group(Infinity);
+            const group = new structures_1.Group(Infinity);
             for (const invite of invites.values()) {
                 group.set(invite.code, invite);
             }
@@ -122,7 +127,7 @@ export default class InviteManager extends EventEmitter {
             };
             await this.memberLeave(member, guildId);
         });
-        for (const func of functions) {
+        for (const func of functions_js_1.default) {
             if (!func.type)
                 func.type = "djs";
             this.#client.functionManager.createFunction(func);
@@ -520,4 +525,5 @@ export default class InviteManager extends EventEmitter {
         return res;
     }
 }
+exports.default = InviteManager;
 //# sourceMappingURL=manager.js.map

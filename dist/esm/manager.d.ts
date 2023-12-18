@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { EventEmitter } from "node:events";
 import { AoiClient, Command } from "aoi.js";
 import { KeyValue, KeyValueData } from "@akarui/aoi.db";

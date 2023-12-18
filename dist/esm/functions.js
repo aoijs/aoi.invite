@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const funcitons = [
     {
         name: "$inviteeInfo",
@@ -391,5 +393,5 @@ $inviteLeaderboard[$guildID;1;10;{position}. {invitername} - {total} invites]
         },
     },
 ];
-export default funcitons;
+exports.default = funcitons;
 //# sourceMappingURL=functions.js.map

@@ -301,7 +301,7 @@ export default class InviteManager extends EventEmitter {
     }
 
     async memberJoin(member: GuildMember) {
-        const invites = await member.guild.invites.fetch().catch((err) => {
+        const invites = await member.guild.invites.fetch().catch((err:Error) => {
             this.#client.emit("error", err);
             return null;
         });

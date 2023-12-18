@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "moduleResolution": "Node",
+        "moduleResolution": "NodeNext",
         "target": "ESNext",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
