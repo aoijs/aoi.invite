@@ -2,10 +2,10 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@akarui/aoi.invite">
-    <img src="https://img.shields.io/npm/v/@akarui/aoi.invite?style=for-the-badge" />
+    <img src="https://img.shields.io/npm/v/@akarui/aoi.invite?style=for-the-badge"  alt="aoiinvite"/>
   </a>
   <a href="https://www.npmjs.com/package/@akarui/aoi.invite">
-    <img src="https://img.shields.io/npm/dt/@akarui/aoi.invite?style=for-the-badge" />
+    <img src="https://img.shields.io/npm/dt/@akarui/aoi.invite?style=for-the-badge"  alt="aoiinvite"/>
   </a>
 
 ## Installation
