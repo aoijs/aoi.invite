@@ -1,15 +1,4 @@
 {
-  "devDependencies": {
-    "@types/node": "^20.4.4",
-    "aoi.js": "^6.7.1",
-    "discord.js": "^14.14.1",
-    "typescript": "^5.1.6"
-  },
-  "dependencies": {
-    "@akarui/aoi.db": "^2.2.5",
-    "@akarui/structures": "^2.1.0",
-    "chalk": "^5.3.0"
-  },
   "name": "@akarui/aoi.invite",
   "description": "An extension to handle invite system for aoi.js",
   "version": "1.0.0",
@@ -25,6 +14,22 @@
     "aoi.invite",
     "aoijs-extension"
   ],
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.4.4",
+    "aoi.js": "^6.7.1",
+    "discord.js": "^14.14.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@akarui/aoi.db": "^2.2.5",
+    "@akarui/structures": "^2.1.0",
+    "chalk": "^5.3.0"
+  },
   "author": "AkaruiDevelopment",
   "license": "Apache-2.0",
   "bugs": {

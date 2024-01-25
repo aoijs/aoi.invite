@@ -14,7 +14,7 @@
 npm i @akarui/aoi.invite
 ```
 
-## Example Usage
+## Setup
 
 ```js
 const {AoiClient} = require("aoi.js");
