@@ -13,6 +13,5 @@ plugins
 .idea
 .vscode
 .DS_Store
-
 data
 extract.js
