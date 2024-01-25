@@ -1,5 +1,18 @@
+#Ignore modules
 node_modules
-package-lock.json
-/index.js
+
+#Ignore database files
 /database
+
+#Ignore Test Environment
+/commands
+config.json
+src/tests/
+plugins
+/index.js
 .idea
+.vscode
+.DS_Store
+
+data
+extract.js
