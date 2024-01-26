@@ -40,7 +40,7 @@ client.command({
 });
 
 const { InviteManager } = require("@akarui/aoi.invite");
-const i = new InviteManager(bot,{
+const i = new InviteManager(client,{
     sk: "a-32-characters-long-string-here",
 },['inviteJoin','inviteLeave']);
 ```
