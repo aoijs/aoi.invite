@@ -6,10 +6,10 @@ settings:
 
 dependencies:
   '@akarui/aoi.db':
-    specifier: github:akaruidevelopment/aoi.db#v2
-    version: github.com/akaruidevelopment/aoi.db/69df3bf0764c869fef5e70a11e274aa61f07c82b
+    specifier: ^2.2.6
+    version: 2.2.6
   '@akarui/structures':
-    specifier: github:akaruidevelopment/structures#v2
+    specifier: ^2.1.0
     version: github.com/akaruidevelopment/structures/f313bff5f4d77473a9acb096f785706c7dab1e2a
   chalk:
     specifier: ^5.3.0
@@ -20,8 +20,8 @@ devDependencies:
     specifier: ^20.4.4
     version: 20.10.5
   aoi.js:
-    specifier: ^6.4.0
-    version: 6.6.1
+    specifier: ^6.7.1
+    version: 6.7.1
   discord.js:
     specifier: ^14.14.1
     version: 14.14.1
@@ -31,25 +31,24 @@ devDependencies:
 
 packages:
 
-  /@akarui/aoi.db@2.1.0:
-    resolution: {integrity: sha512-U8JS4WGO9ICaMg4NWnY5FrFMdF2czO1ARhk/GRAo6pT+3nF7RbB+wQr9zGkjGtH8cL44oSqodjEG5zIEPx9mqw==}
+  /@akarui/aoi.db@2.2.6:
+    resolution: {integrity: sha512-rY6vqXYxmIzSSaJ7xLOlEDUnnr19uSV15UF/1Nwv/7nP9x781Z74f6Ys4GYGnBbGY+py/WOKviWCJAFi2svhsw==}
     engines: {node: '>=20.x'}
     dependencies:
-      '@akarui/structures': 2.0.1
-      jsonrepair: 3.5.0
+      '@akarui/structures': 2.1.0
+      jsonrepair: 3.5.1
       tar: 6.2.0
       ws: 8.15.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-    dev: true
 
   /@akarui/structures@1.0.2:
     resolution: {integrity: sha512-Ac0cCIi0zlduNv0+Cr2B5jDOXq6UMNarzTWBD5z2g5LQs1yh5qcGBwJx+DxhtkqQZbY26PnXsrHOLm8XFfSTlQ==}
     dev: true
 
-  /@akarui/structures@2.0.1:
-    resolution: {integrity: sha512-KyI4oT/d/miXtmisu1xzT3IWd5rBTXW5Yi2ownFmLp+elJtOIKawPRd8yeCy5BKac39QRKkD9TBinQtod89NJQ==}
+  /@akarui/structures@2.1.0:
+    resolution: {integrity: sha512-kGvrGV/CrTzcCZC0zJmW3ZV8rMBDfZo9QlHgmUILshbC8q8ClkrU/hvpQo8IVORKFrYTKf8ZG5dhP4hGCIuPtA==}
 
   /@discordjs/builders@1.7.0:
     resolution: {integrity: sha512-GDtbKMkg433cOZur8Dv6c25EHxduNIBsxeHrsRoIM8+AwmEZ8r0tEpckx/sHwTLwQPOF3e2JWloZh9ofCaMfAw==}
@@ -166,11 +165,11 @@ packages:
       color-convert: 2.0.1
     dev: true
 
-  /aoi.js@6.6.1:
-    resolution: {integrity: sha512-GwYbCip5Xf2PK0MGHxYpoV9LdeDQdclHE1c06UhjG68ld925gd2JNX4VZ5GYgVc/8yiS8KnQB9+oZSPMh7NV1w==}
-    engines: {node: '>=16.11.0'}
+  /aoi.js@6.7.1:
+    resolution: {integrity: sha512-zN3hB31RBxOplYBttPEN5BCmt09fqIFI2M0CxXExWhOxU0btS8Z21mx0CrUrck/VXiWQVDpIVKpRCZloFab5Zw==}
+    engines: {node: '>=20.x'}
     dependencies:
-      '@akarui/aoi.db': 2.1.0
+      '@akarui/aoi.db': 2.2.6
       '@akarui/structures': 1.0.2
       chalk: 4.1.2
       discord.js: 14.14.1
@@ -250,8 +249,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /jsonrepair@3.5.0:
-    resolution: {integrity: sha512-SavvDsUP9Xnqo2MoC6Wl6zNyX3f+I5199hRbXBtAITyP2NTPyAgyx5xM0bgcIljRjzsIvOBANbgfWe8XXlyeLA==}
+  /jsonrepair@3.5.1:
+    resolution: {integrity: sha512-F0VxiEj1j7m1OAVUVy6fFYk5s8tthF61J7tjYtEACw1DeNQqKmZF6dPddduxc7Tc5IrLqKTdLAwUNTmrqqg+hw==}
     hasBin: true
 
   /lodash.snakecase@4.1.1:
@@ -365,21 +364,6 @@ packages:
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
-
-  github.com/akaruidevelopment/aoi.db/69df3bf0764c869fef5e70a11e274aa61f07c82b:
-    resolution: {tarball: https://codeload.github.com/akaruidevelopment/aoi.db/tar.gz/69df3bf0764c869fef5e70a11e274aa61f07c82b}
-    name: '@akarui/aoi.db'
-    version: 2.1.0
-    engines: {node: '>=20.x'}
-    dependencies:
-      '@akarui/structures': 2.0.1
-      jsonrepair: 3.5.0
-      tar: 6.2.0
-      ws: 8.15.1
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
 
   github.com/akaruidevelopment/structures/f313bff5f4d77473a9acb096f785706c7dab1e2a:
     resolution: {tarball: https://codeload.github.com/akaruidevelopment/structures/tar.gz/f313bff5f4d77473a9acb096f785706c7dab1e2a}
